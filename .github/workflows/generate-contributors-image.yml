@@ -1,7 +1,7 @@
 name: Generate Contributors Image
 on:
   schedule:
-    - cron: '0 0 * * *'  # Run every day at midnight
+    - cron: '0 0 * * *'  # Run every day at midnigh
 jobs:
   generate-image:
     runs-on: ubuntu-latest
