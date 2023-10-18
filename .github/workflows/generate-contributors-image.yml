@@ -1,0 +1,26 @@
+name: Generate Contributors Image
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run every day at midnight
+jobs:
+  generate-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install PyGithub
+      - name: Generate contributors image
+        run: |
+          python3 generate_contributors_image.py
+      - name: Update README.md
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: README.md
+          message: "Update contributors image"
+          file_path: README.md
+          committer: GitHub Actions <actions@github.com>
+          author: GitHub Actions <actions@github.com>
