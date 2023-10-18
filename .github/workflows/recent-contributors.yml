@@ -1,0 +1,31 @@
+name: Update Recent Contributors 
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Get Recent Contributors
+      uses: ShehrozIrfan/contributor-faces-action@v1.1
+      with: 
+        repo: ${{ github.repository }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        base: main
+        startDate: '2023-01-01'
+        endDate: '2023-10-01'
+        
+    - name: Update README
+      run: |
+        contributors=$(echo "${{ steps.contributors.outputs.data }}" | jq -r '.[].login + "|" + .[].contributions' | paste -sd, -)
+        sed -i "s|## Recent Contributors.*|## Recent Contributors \n\n![Recent Contributors](https://contributor-faces.shehrozirfan.vercel.app/${contributors})|" README.md
+        
+    - name: Commit README
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'Update recent contributors'
